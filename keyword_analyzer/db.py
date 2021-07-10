@@ -1,11 +1,14 @@
 import os
 import psycopg2
+import psycopg2.extras
+import traceback
 
-host = os.environ["POSTGRES_HOSTNAME"]
-user = os.environ["POSTGRES_USER"]
-password = os.environ["POSTGRES_PASSWORD"]
-db = os.environ["POSTGRES_DATABASE"]
+host = os.environ.get("POSTGRES_HOSTNAME")
+user = os.environ.get("POSTGRES_USER")
+password = os.environ.get("POSTGRES_PASSWORD")
+db = os.environ.get("POSTGRES_DATABASE")
 
+conn = None
 
 def get_connection():
     global conn
@@ -25,7 +28,7 @@ def insert_pdf_record(url, title):
         returning id;
     """
 
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute(sql, [url, title])
     record = cur.fetchone()
     conn.commit()
@@ -41,11 +44,13 @@ def get_keyword_record_id(word):
     LIMIT 1;
     """
 
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute(sql, [word])
     record = cur.fetchone()
     cur.close()
-    return record.get('id')
+    if record:
+        return record.get('id')
+    return None
 
 def insert_keyword_record(word):
     conn = get_connection()
@@ -61,7 +66,7 @@ def insert_keyword_record(word):
         returning id;
     """
 
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute(sql, [word])
     record = cur.fetchone()
     conn.commit()

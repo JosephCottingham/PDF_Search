@@ -1,0 +1,45 @@
+version: "3.9"
+services:
+  db:
+    build: ./db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=pdf
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  crawler:
+    volumes:
+      - /Users/joe/DevDockerVolumes/pdf_search/pdf:/pdf:z
+    build: ./crawler
+    command: python3 crawler.py
+    environment:
+      - PDF_BASE_PATH=/pdf/
+  search_interface:
+    build: ./search_interface
+    command: flask run --host=0.0.0.0
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_HOSTNAME=db
+      - POSTGRES_DATABASE=pdf
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  keyword_analyzer:
+    build: ./keyword_analyzer
+    volumes:
+      - /Users/joe/DevDockerVolumes/pdf_search/pdf:/pdf:z
+    command: python3 keyword_analyzer.py
+    depends_on:
+      - db
+      - crawler
+    environment:
+      - POSTGRES_HOSTNAME=db
+      - POSTGRES_DATABASE=pdf
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PDF_BASE_PATH=/pdf/

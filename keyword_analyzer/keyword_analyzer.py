@@ -6,19 +6,23 @@ from PIL import Image
 from db import (insert_pdf_record, insert_keyword_record, insert_pdf_keyword_relation_record)
 test_pdf = 'research/Paving the Way to Equity CMS OMH Progress Report.pdf'
 
-base_path = 'pdf/'
+base_path = os.environ.get("PDF_BASE_PATH") or 'pdf/'
 
 
 def check_for_new_pdf():
     files = os.listdir(base_path)
     print(f'File Check Status: {files}')
     for file in files:
-        if file.split('.')[-1] != 'txt':
-            file_name = file.split('.')[0]
-            url = open(f"{base_path}{file_name}.txt", "r").read()
-            print(url)
-            index_pdf(base_path+file, url)
-
+        try:
+            if file.split('.')[-1] != 'txt':
+                file_name = file.split('.')[0]
+                url = open(f"{base_path}{file_name}.txt", "r").read()
+                print(url)
+                index_pdf(base_path+file, url)
+        except Exception as e:
+            print(f"{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}")
+            traceback.print_exc()
+            continue
 
 def index_pdf(path_to_file, url):
     file_name = path_to_file.split('/')[-1]
@@ -112,8 +116,12 @@ def get_avg_words_per_page(pdf_file):
     return float(total_words) / float(total_pages)
 
 def remove_pdf(path_to_file):
+    os.chmod(path_to_file, 666)
     os.remove(path_to_file)
-    os.remove(path_to_file.split('.')[0] + '.txt')
+
+    path_to_file = path_to_file.split('.')[0] + '.txt'
+    os.chmod(path_to_file, 666)
+    os.remove(path_to_file)
 
 def insert_index_into_db(keywords, url, title):
     pdf_id = insert_pdf_record(url, title)
