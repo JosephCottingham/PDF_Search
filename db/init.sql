@@ -9,7 +9,7 @@ CREATE TABLE keyword (
     word        varchar(64),
 );
 
-CREATE TABLE bill_product (
+CREATE TABLE pdf_keyword (
   pdf_id    int REFERENCES pdf (pdf_id) ON UPDATE CASCADE ON DELETE CASCADE,
   keyword_id int REFERENCES keyword (keyword_id) ON UPDATE CASCADE,
   CONSTRAINT pdf_keyword_pkey PRIMARY KEY (pdf_id, keyword_id)
