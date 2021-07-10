@@ -12,7 +12,7 @@ services:
       - POSTGRES_PASSWORD=postgres
   crawler:
     volumes:
-      - /Users/joe/DevDockerVolumes/pdf_search/pdf:/pdf:z
+      - ./pdf:/pdf:z
     build: ./crawler
     command: python3 crawler.py
     environment:
@@ -32,7 +32,7 @@ services:
   keyword_analyzer:
     build: ./keyword_analyzer
     volumes:
-      - /Users/joe/DevDockerVolumes/pdf_search/pdf:/pdf:z
+      - ./pdf:/pdf:z
     command: python3 keyword_analyzer.py
     depends_on:
       - db
