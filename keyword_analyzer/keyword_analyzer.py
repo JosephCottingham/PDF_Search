@@ -1,4 +1,5 @@
 import os, time
+from uuid import uuid4
 import fitz
 import pytesseract
 import io
@@ -15,10 +16,16 @@ def check_for_new_pdf():
     for file in files:
         try:
             if file.split('.')[-1] != 'txt':
-                file_name = file.split('.')[0]
-                url = open(f"{base_path}{file_name}.txt", "r").read()
-                print(url)
-                index_pdf(base_path+file, url)
+                continue
+            url = open(f"{base_path}{file}", "r").read()
+            print(url)
+            r = requests.get(url, allow_redirects=True)
+            if r.headers.get('content-type') != 'application/pdf' or header.get('content-length', None) and header.get('content-length', None) < 2e8:
+                return
+            file_path = base_path+uuid4().hex + '.pdf'
+            open(file_path, 'wb').write(r.content)
+            index_pdf(file_path, url)
+            os.remove(f"{base_path}{file}")
         except Exception as e:
             print(f"{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}")
             traceback.print_exc()
@@ -28,9 +35,9 @@ def index_pdf(path_to_file, url):
     file_name = path_to_file.split('/')[-1]
     print(f'PDF: { file_name }')
     pdf_file = fitz.open(path_to_file)
-    # if abs(get_avg_images_per_page(pdf_file)) < .10 and get_avg_words_per_page(pdf_file) > 15:
-        # print('PDF Failed Index requirements')
-        # remove_pdf(path_to_file)
+    if abs(get_avg_images_per_page(pdf_file)) < .10 and get_avg_words_per_page(pdf_file) > 15:
+        print('PDF Failed Index requirements')
+        os.remove(path_to_file)
 
     word_list = []
     img_paths = []
@@ -54,7 +61,7 @@ def index_pdf(path_to_file, url):
         word_list += get_words_from_image(img_path)
     keyword_list = get_keywords_from_list(word_list, num=10)
     print(f'Keywords: {keyword_list}')
-    remove_pdf(path_to_file)
+    os.remove(path_to_file)
     insert_index_into_db(keyword_list, url, file_name)
 
 
@@ -115,13 +122,6 @@ def get_avg_words_per_page(pdf_file):
         total_words += len(page.get_text_words())
     return float(total_words) / float(total_pages)
 
-def remove_pdf(path_to_file):
-    os.chmod(path_to_file, 666)
-    os.remove(path_to_file)
-
-    path_to_file = path_to_file.split('.')[0] + '.txt'
-    os.chmod(path_to_file, 666)
-    os.remove(path_to_file)
 
 def insert_index_into_db(keywords, url, title):
     pdf_id = insert_pdf_record(url, title)
