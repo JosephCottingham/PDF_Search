@@ -59,6 +59,7 @@ def index_pdf(path_to_file, url):
             
     for img_path in img_paths:
         word_list += get_words_from_image(img_path)
+        os.remove(img_path)
     keyword_list = get_keywords_from_list(word_list, num=10)
     print(f'Keywords: {keyword_list}')
     os.remove(path_to_file)
