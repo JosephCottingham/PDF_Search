@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from dotenv import load_dotenv
 import os
 import psycopg2
@@ -25,4 +25,4 @@ app = Flask(__name__)
 @app.route("/")
 def search():
     conn = get_connection()
-    return "<p>Hello, World!</p>"
+    return render_template('home.html')
