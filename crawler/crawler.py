@@ -15,7 +15,7 @@ from PyPDF2 import PdfFileReader
 
 
 # website to scrap
-url = "https://www.geeksforgeeks.org/how-to-extract-pdf-tables-in-python/"
+url = "https://effiesplace.net/our-menus/view-pdf-menus/"
   
 # get the url from requests get method
 read = requests.get(url)
