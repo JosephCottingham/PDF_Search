@@ -7,6 +7,8 @@ from PIL import Image
 from db import (insert_pdf_record, insert_keyword_record, insert_pdf_keyword_relation_record)
 test_pdf = 'research/Paving the Way to Equity CMS OMH Progress Report.pdf'
 from nltk.corpus import stopwords
+import requests
+import traceback
 
 base_path = os.environ.get("PDF_BASE_PATH") or 'pdf/'
 
