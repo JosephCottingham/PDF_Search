@@ -7,6 +7,8 @@ from bs4 import BeautifulSoup
   
 # for input and output operations
 import io
+
+import os
   
 # For getting information about the pdfs
 from PyPDF2 import PdfFileReader
@@ -50,8 +52,18 @@ for link in p:
     # added all the pdf links to set
     list_of_pdf.add(pdf_link)
 
-s = str(list_of_pdf)
 
-text_file = open("pdf.txt", "w")
+save_path = 'crawler/pdfs/'
+file_name = "pdf.txt"
+
+completeName = os.path.join(save_path, file_name)
+print(completeName)
+
+s = str(list_of_pdf)
+s = s.strip('{}')
+s = s.strip(" ' ' ")
+
+
+text_file = open(completeName, "w")
 n = text_file.write(s)
 text_file.close()
