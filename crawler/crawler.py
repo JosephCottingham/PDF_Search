@@ -1,40 +1,46 @@
-import nltk
-# nltk.download('wordnet')
-# from nltk.corpus import wordnet as wn
-
-from uuid import uuid4
-from lxml.html import fromstring
-from requests import get
 
 
+import requests
+from urllib.parse import urlparse, urljoin
+from bs4 import BeautifulSoup
+import colorama
 
-def crawl():
-    # for ss in wn.synsets('car'):
-    #     for word in ss.lemma_names():
-    word = 'car'
-    # raw = get(f"https://www.google.com/search?q=filetype%3Apdf&q={word}").text
-    raw = get(f"http://www.pdfsearchengine.net/searchresult.html?cx=partner-pub-9634067433254658%3A9653363797&cof=FORID%3A10&ie=UTF-8&q=filetype%3Apdf+{word}&qfront={word}&siteurl=http%3A%2F%2Fwww.pdfsearchengine.net%2F&algorithm=filetype%3Apdf+").text
-    page = fromstring(raw)
-    print(raw)
-    for result in page.cssselect("a"):
-        url = result.get("href")
-        print(url)
-        # if '/url?q=' in url:
-        #     url = url[7:]
-        if ('http' in url and check_pdf(url)):
-            write_url_to_text_file(url)
 
-def check_pdf(url):
-    r = get(url, allow_redirects=True)
-    print(r.headers.get('content-type'))
-    return r.headers.get('content-type') == 'application/pdf'
+base_path = os.environ.get("PDF_BASE_PATH") or 'pdf/'
 
-def write_url_to_text_file(url):
-    text_file_name = f"{ uuid4().hex }.txt"
-    text_file = open(text_file_name, "w")
-    text_file.write(url)
-    text_file.close()
-    print(f'{url} written to: {text_file_name}')
 
-if __name__ == '__main__':
-    crawl()
+colorama.init()
+GREEN = colorama.Fore.GREEN
+GRAY = colorama.Fore.LIGHTBLACK_EX
+RESET = colorama.Fore.RESET
+YELLOW = colorama.Fore.YELLOW
+
+# initialize the set of links (unique links)
+internal_urls = set()
+external_urls = set()
+
+
+def is_valid(url):
+    """
+    Checks whether `url` is a valid URL.
+    """
+    parsed = urlparse(url)
+    return bool(parsed.netloc) and bool(parsed.scheme)
+
+
+
+def get_all_website_links(url):
+    """
+    Returns all URLs that is found on `url` in which it belongs to the same website
+    """
+    # all URLs of `url`
+    urls = set()
+    # domain name of the URL without the protocol
+    domain_name = urlparse(url).netloc
+    soup = BeautifulSoup(requests.get(url).content, "html.parser")
+
+for a_tag in soup.findAll("a"):
+        href = a_tag.attrs.get("href")
+        if href == "" or href is None:
+            # href empty tag
+            continue

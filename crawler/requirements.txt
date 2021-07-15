@@ -1,4 +1,0 @@
-nltk
-lxml
-requests
-cssselect
