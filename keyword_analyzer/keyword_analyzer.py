@@ -6,6 +6,7 @@ import io
 from PIL import Image
 from db import (insert_pdf_record, insert_keyword_record, insert_pdf_keyword_relation_record)
 test_pdf = 'research/Paving the Way to Equity CMS OMH Progress Report.pdf'
+from nltk.corpus import stopwords
 
 base_path = os.environ.get("PDF_BASE_PATH") or 'pdf/'
 
@@ -70,6 +71,9 @@ def get_keywords_from_list(word_list, num=10):
     top_word_occurrences = []
     word_occurrences = {}
     for word in word_list:
+        if word in stopwords.words('english'):
+            continue
+        
         if not word_occurrences.get(word):
             word_occurrences[word] = 0
         else:
