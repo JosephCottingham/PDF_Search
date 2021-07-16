@@ -29,6 +29,7 @@ def search():
         if request.args.get('keywords') != None:
             for keyword in request.args.get('keywords').split(' '):
                 results = results + get_values_with_keyword(keyword.upper())
+        print(results)
     return render_template('home.html', results=results)
 
 
@@ -40,12 +41,12 @@ def get_values_with_keyword(keyword):
     WHERE id in ( SELECT pdf_id FROM pdf_keyword
     WHERE keyword_id in (
                         SELECT id FROM keyword
-                        WHERE upper(word) = %s )
+                        WHERE upper(word) LIKE %s )
                     )
     GROUP BY url, title
     """
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    cur.execute(sql, [keyword])
+    cur.execute(sql, ['%'+keyword+'%'])
     records = cur.fetchall()
     cur.close()
     return records

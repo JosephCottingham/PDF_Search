@@ -4,8 +4,7 @@
     {% for result in results %}
         <div class="row icon-boxes">
             <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="200">
-                <h4 class="title"><a href="">{{ results.title }}</a></h4>
-                <a class="url" href="{{ results.url }}">{{ results.url }}</a>
+                <h4 class="title"><a href="{{ result[0] }}">{{ result[1] }}</a></h4>
             </div>
         </div>
     {% endfor %}
