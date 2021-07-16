@@ -114,7 +114,7 @@ def get_words_from_image(path_to_file):
 def get_words_from_pdf_page(page):
     word_list = []
     for word in page.get_text_words():
-        word_list.append(word[4])
+        word_list.append(word[4].upper())
     return word_list
 
 def get_avg_images_per_page(pdf_file):
