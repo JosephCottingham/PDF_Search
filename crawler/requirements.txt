@@ -1,8 +1,4 @@
 requests
 uuid
 beautifulsoup4
-io
-os
-uuid
-random
 PyPDF2
