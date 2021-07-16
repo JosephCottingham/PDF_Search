@@ -10,3 +10,4 @@ RUN apt-get update
 RUN apt-get install tesseract-ocr -y
 RUN pip3 install PyMuPDF-1.18.14-cp38-cp38-manylinux2010_x86_64.whl
 RUN pip3 install -r requirements.txt
+RUN python -m nltk.downloader all

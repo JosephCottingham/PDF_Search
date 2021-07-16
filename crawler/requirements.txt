@@ -1,4 +1,4 @@
+nltk
+lxml
 requests
-uuid
-beautifulsoup4
-PyPDF2
+cssselect

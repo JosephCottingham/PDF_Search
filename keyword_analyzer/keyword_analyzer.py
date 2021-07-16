@@ -23,7 +23,7 @@ def check_for_new_pdf():
             url = open(f"{base_path}{file}", "r").read()
             print(url)
             r = requests.get(url, allow_redirects=True)
-            if r.headers.get('content-type') != 'application/pdf' or header.get('content-length', None) and header.get('content-length', None) < 2e8:
+            if r.headers.get('content-type') != 'application/pdf' or r.headers.get('content-length', None) == None and r.headers.get('content-length', None) < 2e8:
                 return
             file_path = base_path+uuid4().hex + '.pdf'
             open(file_path, 'wb').write(r.content)
@@ -55,14 +55,17 @@ def index_pdf(path_to_file, url):
             # load it to PIL
             image = Image.open(io.BytesIO(image_bytes))
             # save it to local disk
-            img_path = f"pdf_imgs/image{page_index+1}_{image_index}.{image_ext}"
+            img_path = f"{base_path}imgs/image{page_index+1}_{image_index}.{image_ext}"
             img_paths.append(img_path)
             image.save(open(img_path, "wb"))
         word_list = word_list + get_words_from_pdf_page(page)
-            
+
     for img_path in img_paths:
         word_list += get_words_from_image(img_path)
-        os.remove(img_path)
+        try:
+            os.remove(img_path)
+        except:
+            print('error in img removal')
     keyword_list = get_keywords_from_list(word_list, num=10)
     print(f'Keywords: {keyword_list}')
     os.remove(path_to_file)
@@ -105,6 +108,7 @@ def get_words_from_image(path_to_file):
         for word_2 in word.split('\n'):
             if word_2 != '':
                 word_list.append(word_2)
+    img.close()
     return word_list
 
 def get_words_from_pdf_page(page):

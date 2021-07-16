@@ -1,0 +1,4 @@
+requests
+uuid
+beautifulsoup4
+PyPDF2
