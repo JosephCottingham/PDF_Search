@@ -42,18 +42,14 @@ random = str(uuid.UUID(int=random.getrandbits(128)))
 
 # iterate through p for getting all the href links
 for link in p:
-		
-		
 	# original html links
-	print("links: ", link.get('href'))
-	print("\n")
-
+	# print("links: ", link.get('href'))
+	# print("\n")
 	# converting the extention from .html to .pdf
 	pdf_link = (link.get('href')[:-5]) + ".pdf"
-	 
 	# converted to .pdf
-	print("converted pdf links: ", pdf_link)
-	print("\n")
+	# print("converted pdf links: ", pdf_link)
+	# print("\n")
 
 	for link in pdf_link:
 
