@@ -1,0 +1,8 @@
+requests
+uuid
+BeautifulSoup
+io
+os
+PdfFileReader
+uuid
+random
