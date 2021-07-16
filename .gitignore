@@ -129,4 +129,6 @@ dmypy.json
 .pyre/
 
 data/*
-pdf/*
+pdf/*.txt
+pdf/*.pdf
+pdf/imgs/*
