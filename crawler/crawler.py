@@ -54,7 +54,7 @@ for link in p:
 	for link in pdf_link:
 
 		pdf_link = url + pdf_link
-		save_path = 'crawler/pdfs/'
+		save_path = os.environ.get("PDF_BASE_PATH") or 'pdf/'
 		file_name =  str(random) + ".txt"
 		completeName = os.path.join(save_path, file_name)
 		text_file = open(completeName, "w")
