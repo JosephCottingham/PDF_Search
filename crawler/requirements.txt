@@ -1,8 +1,9 @@
 requests
 uuid
-BeautifulSoup
+beautifulsoup4
 io
 os
 PdfFileReader
 uuid
 random
+PyPDF2

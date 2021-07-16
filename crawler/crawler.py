@@ -14,7 +14,8 @@ from PyPDF2 import PdfFileReader
 
 
 # website to scrap
-url = "https://en.wikipedia.org/wiki/PDF"
+url = input("Enter the website you'd like to scrape for PDF links ")
+# url = "https://en.wikipedia.org/wiki/PDF"
 
 # get the url from requests get method
 read = requests.get(url)
@@ -38,71 +39,65 @@ unique_filename = str(uuid.uuid4())
 
 import uuid
 import random
-random = str(uuid.UUID(int=random.getrandbits(128)))
+random = str()
+
+
+save_path = 'crawler/pdfs/'
+file_name =  str(random) + ".txt"
+completeName = os.path.join(save_path, file_name)
 
 # iterate through p for getting all the href links
 for link in p:
-	# original html links
-	# print("links: ", link.get('href'))
-	# print("\n")
+
 	# converting the extention from .html to .pdf
 	pdf_link = (link.get('href')[:-5]) + ".pdf"
-	# converted to .pdf
-	# print("converted pdf links: ", pdf_link)
-	# print("\n")
 
-	for link in pdf_link:
-
-		pdf_link = url + pdf_link
-		save_path = 'crawler/pdfs/'
-		file_name =  str(random) + ".txt"
-		completeName = os.path.join(save_path, file_name)
-		text_file = open(completeName, "w")
-		text_file.write(pdf_link)
-		text_file.close()
-		break
+	pdf_link = url + pdf_link
+	list_of_pdf.add(pdf_link)
 
 
+save_path = 'crawler/pdfs/'
+file_name =  "pdf.txt"
 
-	# added all the pdf links to set
-	# list_of_pdf.add(pdf_link) 
-
-
-
-# for line in list_of_pdf:
-	 
+completeName = os.path.join(save_path, file_name)
+text_file = open(completeName, "w")
 
 
-# save_path = 'crawler/pdfs/'
-# file_name =  "pdf.txt"
+#Preprocessing of pdf.txt
+s = str(list_of_pdf)
+s = s.strip('{}')
+s = s.strip("'")
+s = s.strip(" ' ' ") 
+n = text_file.write(s)
 
-# completeName = os.path.join(save_path, file_name)
-# text_file = open(completeName, "w")
+text_file.write(s)
+text_file.close()
 
-# s = str(list_of_pdf)
-# s = s.strip('{}')
-# n = text_file.write(s)
 
-# text_file.write("\n")
-# text_file.close()
-# # s = s.strip(" ' ' ")
+# Preprocessing
+f = open('crawler/pdfs/pdf.txt', 'r+')
+n = f.read().replace(',', ',\n')
+f.truncate(0)                    # remove file contents from begin
+f.write(n)                       # write result into file :)
+f.close()
 
 
 
-
-# with open('crawler/pdfs/pdf.txt','r') as pdf:
-
-# 	for element in pdf:
-# 		print(element)
-		# n = text_file.write(element)
-		# text_file.write("\n")
-		# text_file.close()
+#variables for for loop below
+save_path_new = 'crawler/pdfs/'
+file_name_new =  random + str(1) + ".txt"
+completePath = os.path.join(save_path_new, file_name_new)
 
 
-# with open('crawler/pdfs/pdf.txt','r') as pdf:
-# 	for line in pdf:
-# 		s.strip().split(',')
-# 		print(line)
+#Write all links to new files based on line number
+f1 = open('crawler/pdfs/pdf.txt', 'r')
+for i,text in enumerate(f1):
+    open('crawler/pdfs/' + str(i + 1) + '.txt', 'w').write(text.replace(",", ""))
 
-        # with open(line.rstrip() + '.txt','w') as new_file:
-        #     new_file.write(line)
+
+# f1 = open('crawler/pdfs/pdf.txt', 'r')
+# for i,text in enumerate(f1):
+#     open(completePath, 'w').write(text.replace("'", ""))
+	
+
+
